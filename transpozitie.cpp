@@ -23,10 +23,20 @@ static std::string encrypt(const std::string& text, const std::string& key) {
     std::vector<int> order = columnOrder(key);
 
     std::string out;
-    out.reserve(clean.size());
-    for (int col : order)
-        for (int row = 0; row < rows; ++row)
+    out.reserve(clean.size() + cols); 
+    
+    for (size_t i = 0; i < order.size(); ++i) {
+        int col = order[i];
+        for (int row = 0; row < rows; ++row) {
             out += clean[row * cols + col];
+        }
+        if ((i + 1) % 5 == 0) {
+            out += '\n';
+        }
+       if ((i + 1) % 5 != 0) {
+            out += ' ';
+       }
+    }
 
     return out;
 }
@@ -68,10 +78,6 @@ int main() {
     std::getline(fin, key);
 
     std::vector<int> order = columnOrder(key);
-    fout << "Cheie: " << key << "  |  Ordine coloane: ";
-    for (int i = 0; i < (int)order.size(); ++i)
-        fout << order[i] + 1 << (i + 1 < (int)order.size() ? ", " : "\n\n");
-
     bool doEncrypt = (toUp(op[0]) == 'E');
     std::string result = doEncrypt ? encrypt(readText(fin), key)
                                    : decrypt(readText(fin), key);
